@@ -51,7 +51,7 @@ public class GamePane extends Pane {
     this.getChildren().add(info);
 
     info.setFont(font);
-    info.setStyle("-fx-stroke: #FFFFFF");
+    info.setStyle("-fx-stroke: #FFFFFF;-fx-fill: #FFFFFF");
 
     this.timer = new GameTimer();
   }
@@ -80,14 +80,15 @@ public class GamePane extends Pane {
     if(dm != 0) {
       dy += Math.sin(p.getAngle()) * dm;
       dx += Math.cos(p.getAngle()) * dm;
-      if(dy > -1 * maxSpeed && dy < maxSpeed && dx > -1 * maxSpeed &&
-         dx < maxSpeed) {
+
+      if(dy > -1 * maxSpeed && dy < maxSpeed)
         p.setdy(dy);
+      if(dx > -1 * maxSpeed && dx < maxSpeed)
         p.setdx(dx);
-      }
     }
     if(da != 0)
       p.setAngle(p.getAngle() / Math.PI * 180 + da);
+    p.move();
   }
 
   public void reload(long now) {
@@ -100,37 +101,23 @@ public class GamePane extends Pane {
     }
   }
 
-  public void onKeyPress(KeyEvent event) {
-    double moveStep = .3;
-    double turnStep = 5;
-    if(event.getCode() == KeyCode.UP) {
-      dm = moveStep;
-    }
-    if(event.getCode() == KeyCode.DOWN) {
-      dm = moveStep * -1;
-    }
-    if(event.getCode() == KeyCode.LEFT) {
-      da = turnStep * -1;
-    }
-    if(event.getCode() == KeyCode.RIGHT) {
-      da = turnStep;
-    }
-    if(event.getCode() == KeyCode.SPACE && canFire) {
-      p.shoot(GamePane.this);
-      lastFire = nanoNow;
-      canFire = false;
-    }
-  }
-
   public void nextLevel() {
     this.score += 100 * this.level;
     this.level++;
     this.p.reset();
+
     // make `level+1` asteroids at the start of the level
+    while(p.getBullets().size() > 0) {
+      p.getBullets().get(0).remove(this);
+      p.getBullets().remove(0);
+    }
+
     for(int i = 0; i <= this.level; i++) {
       Astroid tmp = new Astroid();
       this.astroids.add(tmp);
       tmp.add(GamePane.this);
+      while(tmp.checkCollision(p))
+        tmp.move();
     }
   }
 
@@ -156,6 +143,28 @@ public class GamePane extends Pane {
     }
   }
 
+  public void onKeyPress(KeyEvent event) {
+    double moveStep = .3;
+    double turnStep = 4.3;
+    if(event.getCode() == KeyCode.UP) {
+      dm = moveStep;
+    }
+    if(event.getCode() == KeyCode.DOWN) {
+      dm = moveStep * -1;
+    }
+    if(event.getCode() == KeyCode.LEFT) {
+      da = turnStep * -1;
+    }
+    if(event.getCode() == KeyCode.RIGHT) {
+      da = turnStep;
+    }
+    if(event.getCode() == KeyCode.SPACE && canFire) {
+      p.shoot(GamePane.this);
+      lastFire = nanoNow;
+      canFire = false;
+    }
+  }
+
   public void onKeyRelease(KeyEvent event) {
     if(event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
       dm = 0;
@@ -166,10 +175,13 @@ public class GamePane extends Pane {
   }
 
   private class GameTimer extends AnimationTimer {
+
     @Override
     public void handle(long now) {
-      // complete player movement calculations
+      // complete player movement calculations every 4 refreshes
       move();
+
+      p.moveBullets(GamePane.this);// move bullets every refresh
 
       // Allows player to shoot again when no bullets remain on the screen,
       // or timer has run out(guns have been 'reloaded')
@@ -220,7 +232,6 @@ public class GamePane extends Pane {
           }
         }
       }
-      p.move(GamePane.this);
     }
   }
 }

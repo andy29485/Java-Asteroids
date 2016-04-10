@@ -26,7 +26,7 @@ public class Astroid extends GameObject {
     this.size = size;
     this.dangle = Math.random() * 4 - 2;
 
-    Double[] points = new Double[(int) (Math.random() * 6 + this.size * 4)];
+    Double[] points = new Double[(int) (Math.random() * 5 + this.size + 7)];
     for(int i = 0; i < points.length / 2; i++) {
       double angle = i * Math.PI * 4.0 / points.length;
       points[i * 2] =

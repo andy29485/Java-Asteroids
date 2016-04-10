@@ -43,9 +43,7 @@ public class Player extends GameObject {
     this.setAngle(0);
   }
 
-  public void move(Pane p) {
-    super.move();
-
+  public void moveBullets(Pane p) {
     for(int i = 0; i < bullets.size(); i++) {
       Bullet b = bullets.get(i);
       if(b.isDone()) {

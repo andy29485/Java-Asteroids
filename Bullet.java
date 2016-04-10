@@ -5,12 +5,15 @@
 package final_project;
 
 public class Bullet extends GameObject {
-  public static final int BULLET_LIFE = 50;
-  public static final int LIFE_DRAIN  = 1;
-  private int             lifeRemaining;
+  public static final double BULLET_SPEED = 7;
+  public static final int    BULLET_LIFE  =
+      (AstroidsDriver.SIZE_X + AstroidsDriver.SIZE_Y) / (int) BULLET_SPEED;
+  public static final int    LIFE_DRAIN   = 1;
+  private int                lifeRemaining;
 
   public Bullet(double x, double y, double angle) {
-    super(x, y, Math.cos(angle) * 14, Math.sin(angle) * 14, "circle");
+    super(x, y, Math.cos(angle) * BULLET_SPEED, Math.sin(angle) * BULLET_SPEED,
+        "circle");
     this.lifeRemaining = BULLET_LIFE;
   }
 

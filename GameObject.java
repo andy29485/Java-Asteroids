@@ -28,7 +28,7 @@ public abstract class GameObject {
     this.dx = dx;
     this.dy = dy;
     this.angle = 0;
-    this.shapes = new Shape[5];
+    this.shapes = new Shape[4];
 
     for(int i = 0; i < this.shapes.length; i++) {
       if(shape.equalsIgnoreCase("polygon"))
@@ -92,20 +92,34 @@ public abstract class GameObject {
       this.y -= frameY;
     }
     this.shapes[0].setRotate(this.angle);
+    this.shapes[1].setRotate(this.angle);
+    this.shapes[2].setRotate(this.angle);
+    this.shapes[3].setRotate(this.angle);
+
     this.shapes[0].setLayoutX(this.x);
     this.shapes[0].setLayoutY(this.y);
-    this.shapes[1].setRotate(this.angle);
-    this.shapes[1].setLayoutX(this.x);
-    this.shapes[1].setLayoutY(this.y - frameX);
-    this.shapes[2].setRotate(this.angle);
-    this.shapes[1].setLayoutX(this.x);
-    this.shapes[2].setLayoutY(this.y + frameX);
-    this.shapes[3].setRotate(this.angle);
-    this.shapes[3].setLayoutX(this.x + frameY);
-    this.shapes[3].setLayoutY(this.y);
-    this.shapes[4].setRotate(this.angle);
-    this.shapes[4].setLayoutX(this.x - frameY);
-    this.shapes[4].setLayoutY(this.y);
+
+    if(this.x > frameX / 2) {
+      this.shapes[1].setLayoutX(this.x - frameX);
+      this.shapes[2].setLayoutX(this.x);
+      this.shapes[3].setLayoutX(this.x - frameX);
+    }
+    else {
+      this.shapes[1].setLayoutX(this.x + frameX);
+      this.shapes[2].setLayoutX(this.x);
+      this.shapes[3].setLayoutX(this.x + frameX);
+    }
+
+    if(this.y > frameY / 2) {
+      this.shapes[1].setLayoutY(this.y);
+      this.shapes[2].setLayoutY(this.y - frameY);
+      this.shapes[3].setLayoutY(this.y - frameY);
+    }
+    else {
+      this.shapes[1].setLayoutY(this.y);
+      this.shapes[2].setLayoutY(this.y + frameY);
+      this.shapes[3].setLayoutY(this.y + frameY);
+    }
   }
 
   public void setX(double x) {
@@ -145,11 +159,20 @@ public abstract class GameObject {
   }
 
   public boolean checkCollision(GameObject obj) {
-    Shape[] ab = obj.getShapes();
-    for(Shape b : ab) {
-      if(!Shape.intersect(this.shapes[0], b).getLayoutBounds().isEmpty())
+    for(int i = 0; i < obj.getShapes().length; i++) {
+      if(dist(this.shapes[0], obj.getShapes()[i]) < 100 &&
+         !Shape.intersect(this.shapes[0], obj.getShapes()[i]).getLayoutBounds()
+             .isEmpty())
         return true;
     }
     return false;
+  }
+
+  public static double dist(Shape a, Shape b) {
+    return Math.sqrt(
+        ((a.getLayoutX() - b.getLayoutX()) *
+         (a.getLayoutX() - b.getLayoutX())) +
+                     ((a.getLayoutY() - b.getLayoutY()) *
+                      (a.getLayoutY() - b.getLayoutY())));
   }
 }
