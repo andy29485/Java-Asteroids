@@ -1,0 +1,22 @@
+ScoresPane{
+  -fx-background-color: black;
+}
+Button{
+  -fx-text-fill: white;
+  -fx-font-family: "Arial Narrow";
+  -fx-font-weight: bold;
+  -fx-background-color: black;
+  -fx-focus-color: transparent;
+  -fx-border-radius: 5;
+  -fx-focus-radius: 0;
+  -fx-border-color: #555753;
+}
+TextField{
+  -fx-background-color: transparent;
+  -fx-foreground-color: white;
+  -fx-stroke-color: white;
+}
+Label{
+  -fx-background-color: transparent;
+  -fx-text-fill: white;
+}
