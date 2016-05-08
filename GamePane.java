@@ -245,10 +245,10 @@ public class GamePane extends Pane {
      */
     @Override
     public void handle(long now) {
-      // complete player movement calculations every 4 refreshes
+      // complete player movement calculations
       move();
 
-      p.moveBullets(GamePane.this);// move bullets every refresh
+      p.moveBullets(GamePane.this);// move bullets
 
       // Allows player to shoot again when no bullets remain on the screen,
       // or timer has run out(guns have been 'reloaded')
